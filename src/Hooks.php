@@ -2,6 +2,7 @@
 
 namespace OurWorldInData;
 
+use Html;
 use MediaWiki\Hook\ParserFirstCallInitHook;
 use MWException;
 use Parser;
@@ -38,7 +39,14 @@ class Hooks implements ParserFirstCallInitHook {
 		$url = "https://ourworldindata.org/grapher/{$sanInput}?" . http_build_query( $sanArgs );
 		$parser->getOutput()->addModuleStyles( [ 'ext.owid' ] );
 		return [
-			"<iframe src=\"$url\" loading=\"lazy\" class=\"owid-frame\"></iframe>",
+			Html::element(
+				'iframe',
+				[
+					'src' => $url,
+					'loading' => 'lazy',
+					'class' => 'owid-frame'
+				]
+			),
 			'markerType' => 'nowiki'
 		];
 	}
