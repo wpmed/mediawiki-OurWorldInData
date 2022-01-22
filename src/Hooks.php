@@ -28,10 +28,15 @@ class Hooks implements ParserFirstCallInitHook {
 	 * @return array HTML that will not be processed further
 	 */
 	public function renderOurWorldInData( string $input, array $args, Parser $parser, PPFrame $frame ) {
-		$urlBase = 'https://ourworldindata.org/grapher/' . rawurlencode( trim( $input ) );
-		$url = wfAppendQuery( $urlBase, $args );
+		// do some light sanitization
+		$sanInput = rawurlencode( $input );
+		$sanArgs = [];
+		foreach ( $args as $key => $value ) {
+			$sanArgs[urlencode( $key )] = urlencode( $value );
+		}
 
-		$parser->getOutput()->addModuleStyles( 'ext.owid' );
+		$url = "https://ourworldindata.org/grapher/{$sanInput}?" . http_build_query( $sanArgs );
+		$parser->getOutput()->addModuleStyles( [ 'ext.owid' ] );
 		return [
 			"<iframe src=\"$url\" loading=\"lazy\" class=\"owid-frame\"></iframe>",
 			'markerType' => 'nowiki'
