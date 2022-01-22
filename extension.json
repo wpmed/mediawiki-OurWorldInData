@@ -1,0 +1,39 @@
+{
+	"name": "OurWorldInData",
+	"namemsg": "owid-extensionname",
+	"version": "1.0.0",
+	"author": [
+		"Ryan Schmidt"
+	],
+	"license-name": "GPL-3.0-or-later",
+	"url": "https://mwusers.org",
+	"descriptionmsg": "owid-desc",
+	"type": "parserhook",
+	"MessagesDirs": {
+		"OurWorldInData": [
+			"i18n"
+		]
+	},
+	"AutoloadNamespaces": {
+		"OurWorldInData\\": "src/"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "OurWorldInData\\Hooks"
+		}
+	},
+	"Hooks": {
+		"ParserFirstCallInit": "main"
+	},
+	"ResourceModules": {
+		"ext.owid": {
+			"localBasePath": "modules/ext.owid",
+			"remoteExtPath": "OurWorldInData/modules/ext.owid",
+			"styles": "owid.css"
+		}
+	},
+	"requires": {
+		"MediaWiki": ">= 1.37.0"
+	},
+	"manifest_version": 2
+}
