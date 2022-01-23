@@ -3,10 +3,10 @@
 	"namemsg": "owid-extensionname",
 	"version": "1.0.0",
 	"author": [
-		"Ryan Schmidt"
+		"[https://mwusers.org Ryan Schmidt]"
 	],
 	"license-name": "GPL-3.0-or-later",
-	"url": "https://mwusers.org",
+	"url": "https://www.mediawiki.org/wiki/Extension:OurWorldInData",
 	"descriptionmsg": "owid-desc",
 	"type": "parserhook",
 	"MessagesDirs": {
