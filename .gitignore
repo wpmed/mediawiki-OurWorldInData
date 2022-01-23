@@ -1,0 +1,7 @@
+# Composer stuff
+composer.phar
+/vendor/
+composer.lock
+
+# Packaging
+*.iep
