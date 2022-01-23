@@ -29,14 +29,23 @@ class Hooks implements ParserFirstCallInitHook {
 	 * @return array HTML that will not be processed further
 	 */
 	public function renderOurWorldInData( string $input, array $args, Parser $parser, PPFrame $frame ) {
-		// do some light sanitization
-		$sanInput = rawurlencode( $input );
-		$sanArgs = [];
-		foreach ( $args as $key => $value ) {
-			$sanArgs[urlencode( $key )] = urlencode( $value );
+		// check if we were given a full URL (possibly with parameters)
+		$bits = wfParseUrl( $input );
+		if (
+			$bits !== false
+			&& $bits['host'] === 'ourworldindata.org'
+			&& preg_match( ',^/grapher/(.*)$,', $bits['path'], $matches )
+		) {
+			$input = $matches[1];
+
+			if ( isset( $bits['query'] ) ) {
+				// args passed explicitly into the tag override args present in the URL's query string
+				$args = array_merge( wfCgiToArray( $bits['query'] ), $args );
+			}
 		}
 
-		$url = "https://ourworldindata.org/grapher/{$sanInput}?" . http_build_query( $sanArgs );
+		$baseUrl = 'https://ourworldindata.org/grapher/' . rawurlencode( $input );
+		$url = wfAppendQuery( $baseUrl, $args );
 		$parser->getOutput()->addModuleStyles( [ 'ext.owid' ] );
 		return [
 			Html::element(
