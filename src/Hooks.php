@@ -53,7 +53,7 @@ class Hooks implements ParserFirstCallInitHook {
 				[
 					'src' => $url,
 					'loading' => 'lazy',
-					'class' => 'owid-frame'
+					'class' => 'owid-frame mw-kartographer-container'
 				]
 			),
 			'markerType' => 'nowiki'
