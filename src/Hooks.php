@@ -1,7 +1,8 @@
 <?php
 
-namespace OurWorldInData;
+namespace MediaWiki\Extension\OurWorldInData;
 
+use Config;
 use Html;
 use MediaWiki\Hook\ParserFirstCallInitHook;
 use MWException;
@@ -9,6 +10,16 @@ use Parser;
 use PPFrame;
 
 class Hooks implements ParserFirstCallInitHook {
+	/** @var Config Main config */
+	private Config $config;
+
+	/**
+	 * @param Config $config Main config
+	 */
+	public function __construct( Config $config ) {
+		$this->config = $config;
+	}
+
 	/**
 	 * Register the &lt;ourworldindata&gt; tag
 	 *
@@ -26,25 +37,18 @@ class Hooks implements ParserFirstCallInitHook {
 	 * @param array $args Arguments passed to dataset
 	 * @param Parser $parser Parser
 	 * @param PPFrame $frame Parser Frame
-	 * @return array HTML that will not be processed further
+	 * @return string|array HTML that will not be processed further
 	 */
 	public function renderOurWorldInData( string $input, array $args, Parser $parser, PPFrame $frame ) {
-		// check if we were given a full URL (possibly with parameters)
-		$bits = wfParseUrl( $input );
-		if (
-			$bits !== false
-			&& $bits['host'] === 'ourworldindata.org'
-			&& preg_match( ',^/grapher/(.*)$,', $bits['path'], $matches )
-		) {
-			$input = $matches[1];
-
-			if ( isset( $bits['query'] ) ) {
-				// args passed explicitly into the tag override args present in the URL's query string
-				$args = array_merge( wfCgiToArray( $bits['query'] ), $args );
-			}
+		// validate $input a bit
+		if ( !preg_match( ',^[a-z0-9_-]+$,i', $input ) ) {
+			return '<strong class="error">'
+				. htmlspecialchars( wfMessage( 'owid-error-key' )->text() )
+				. '</strong>';
 		}
 
-		$baseUrl = 'https://ourworldindata.org/grapher/' . rawurlencode( $input );
+		$urlPattern = $this->config->get( 'OurWorldInDataUrl' );
+		$baseUrl = str_replace( '$1', rawurlencode( $input ), $urlPattern );
 		$url = wfAppendQuery( $baseUrl, $args );
 		$parser->getOutput()->addModuleStyles( [ 'ext.owid' ] );
 		return [
