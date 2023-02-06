@@ -21,7 +21,8 @@
 		"main": {
 			"class": "MediaWiki\\Extension\\OurWorldInData\\Hooks",
 			"services": [
-				"MainConfig"
+				"MainConfig",
+				"UrlUtils"
 			]
 		}
 	},
